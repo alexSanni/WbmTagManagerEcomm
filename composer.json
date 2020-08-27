@@ -1,5 +1,5 @@
 {
-    "name": "alexSanni/tag-manager-sw6",
+    "name": "webmatch/tag-manager-sw6",
     "keywords": ["shopware6", "shopware-6", "GTM", "datalayer", "datalayer-configuration", "google-tag-manager", "shopware-plugin"],
     "description": "Google Tag Manager + Enhanced E-Commerce Tracking",
     "version": "1.0.0",
