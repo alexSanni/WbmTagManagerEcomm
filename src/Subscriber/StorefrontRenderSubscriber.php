@@ -3,6 +3,7 @@
 namespace Wbm\TagManagerEcomm\Subscriber;
 
 use Shopware\Storefront\Event\StorefrontRenderEvent;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Wbm\TagManagerEcomm\Cookie\CustomCookieProvider;
 use Wbm\TagManagerEcomm\Services\DataLayerModules;
@@ -20,12 +21,19 @@ class StorefrontRenderSubscriber implements EventSubscriberInterface
      */
     private $dataLayerRenderer;
 
+    /**
+     * @var SystemConfigService
+     */
+    private $systemConfigService;
+
     public function __construct(
         DataLayerModules $modules,
-        DataLayerRenderer $dataLayerRenderer
+        DataLayerRenderer $dataLayerRenderer,
+        SystemConfigService $systemConfigService
     ) {
         $this->modules = $modules;
         $this->dataLayerRenderer = $dataLayerRenderer;
+        $this->systemConfigService = $systemConfigService;
     }
 
     public static function getSubscribedEvents(): array
@@ -37,8 +45,8 @@ class StorefrontRenderSubscriber implements EventSubscriberInterface
 
     public function onRender(StorefrontRenderEvent $event): void
     {
-        $containerId = $this->modules->getContainerId();
-        $isActive = !empty($containerId) && $this->modules->isActive();
+        $containerId = $this->systemConfigService->get('WbmTagManagerEcomm.config.containerId', $event->getSalesChannelContext()->getSalesChannel()->getId()); // $this->modules->getContainerId();
+        $isActive = !empty($containerId) && !$this->systemConfigService->get('WbmTagManagerEcomm.config.isInactive', $event->getSalesChannelContext()->getSalesChannel()->getId()); // $this->modules->isActive();
         $route = $event->getRequest()->attributes->get('_route');
 
         if (!$isActive) {
@@ -75,7 +83,7 @@ class StorefrontRenderSubscriber implements EventSubscriberInterface
             );
             $event->setParameter(
                 'wbmGtmCookieEnabled',
-                $enabledCookie
+                true // $enabledCookie
             );
 
             if (!empty($dataLayer)) {
