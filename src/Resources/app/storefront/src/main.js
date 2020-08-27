@@ -3,6 +3,8 @@
 import HttpClient from 'src/service/http-client.service';
 import { COOKIE_CONFIGURATION_UPDATE } from 'src/plugin/cookie/cookie-configuration.plugin';
 
+//hi welt
+
 const __superFunc = HttpClient.prototype._registerOnLoaded;
 HttpClient.prototype._registerOnLoaded = function (request, callback) {
     __superFunc.call(this, request, callback);
